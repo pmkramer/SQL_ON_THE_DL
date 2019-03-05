@@ -25,11 +25,14 @@ public class Database  {
         if (db == null) db = new Database();
     }
     
-    public Database getDatabase() throws SQLException {
+    public static Database getDatabase() throws SQLException {
         if (db == null) {
             db = new Database();
         }
         return db;
     }
     
+    public Connection getConnection() throws SQLException {
+        return connect;
+    }
 }
