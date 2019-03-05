@@ -24,6 +24,7 @@ public class Recipe implements Page{
     private String descr = "";
     private String insts = "";
     private String author = "";
+    private int id;
     
     // CHANGE CONSTRUCTOR TO TAKE ALL NECESSARY FIELDS
     // THAT DEFINE A RECIPE

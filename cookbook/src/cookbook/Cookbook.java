@@ -27,7 +27,7 @@ public class Cookbook extends Application {
         Menu.setUpStage(stage);
         home = new Home();
         search = new Search();
-        account = new Account();
+        account = Account.getAccount();
         Page[] pages = {home, search, account};
         Menu.setUpPages(pages);
         for (Page p : pages) {
