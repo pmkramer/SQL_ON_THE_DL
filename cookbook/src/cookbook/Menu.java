@@ -31,8 +31,13 @@ public final class Menu {
     private static Stage stage;
     private static Page[] pages;
     
-    public static void setUpMenu(Stage s, Page[] p) {
+    
+    
+    public static void setUpStage(Stage s) {
         stage = s;
+    }
+    
+    public static void setUpPages(Page[] p) {
         pages = p;
     }
     
@@ -58,7 +63,6 @@ public final class Menu {
         account.setMinHeight(267);
         
         root.getChildren().addAll(home, search, account);
-        setUpNavigation(stage, pages);
     }
     
     public VBox getRoot() {
@@ -77,7 +81,7 @@ public final class Menu {
 	});
     }
     
-    public void setUpNavigation(Stage stage, Page[] pages) {
+    public void setUpNavigation() {
         for (Node n : root.getChildren()) {
             if (n.getId().equals("home")) {
                 setUpSingleConnection(stage, pages, (Button)n, Home.ID);
@@ -117,5 +121,9 @@ public final class Menu {
 	root.setId("background");
 	root.setStyle("-fx-background-color: linear-gradient(to bottom, #ffffff, #6d6d6d);");
         return root;
+    }
+    
+    public static Stage getStage() {
+        return stage;
     }
 }

@@ -14,27 +14,24 @@ import javafx.stage.Stage;
  * @author krame
  */
 public class Cookbook extends Application {
-    private final Page home;
-    private final Page search;
-    private final Page account;
-    
+    private Page home;
+    private Page search;
+    private Page account;
     public static void main(String[] args) {
         launch(args);
-    }
-
-    public Cookbook() throws FileNotFoundException {
-        
-        this.home = new Home();
-        this.search = new Search();
-        this.account = new Account();
     }
     
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Cookbook");
+        Menu.setUpStage(stage);
+        home = new Home();
+        search = new Search();
+        account = new Account();
         Page[] pages = {home, search, account};
+        Menu.setUpPages(pages);
         for (Page p : pages) {
-            p.getMenu().setUpNavigation(stage, pages);
+            p.getMenu().setUpNavigation();
         }
         
         stage.setScene(pages[Home.ID].getScene());

@@ -23,10 +23,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-/**
- *
- * @author krame
- */
+
 public class Search implements Page{
     public static final int ID = 1;
     private final VBox root = new VBox();
@@ -37,7 +34,6 @@ public class Search implements Page{
     
     public Search() throws FileNotFoundException {
         HBox background = Menu.Background();
-        
         background.getChildren().add(menu.getRoot());
         root.getChildren().add(background);
         scene = new Scene(root, 1200, 800);
