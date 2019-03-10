@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package cookbook;
-
+import java.sql.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -121,7 +121,11 @@ public class Account implements Page {
                 } catch (SQLException ex) {
                     Logger.getLogger(Account.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                user = signIn(username, password);
+                try {
+                    user = signIn(username, password);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
                 if (user == null) {
                     badInput.setText("Incorrect Username or Password");
                 }
@@ -168,6 +172,11 @@ public class Account implements Page {
                     String passwordVerify = pwBox2.getText();
                     String firstN = firstNameTextField.getText();
                     String lastN = lastNameTextField.getText();
+                    try {
+                        boolean result = createAccount(username, firstN + " " + lastN, password);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
 
             }
@@ -209,9 +218,24 @@ public class Account implements Page {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         // hash the password before storing
         password = bytesToHex(digest.digest(password.getBytes(StandardCharsets.UTF_8)));
-        password = password.substring(PASSWORD_SIZE + 1);
+        password = password.substring(0, PASSWORD_SIZE);
         // TODO: connect to database and try to insert user
-        return false; // return True if success and false otherwise
+        try {
+            // TODO: clean this up
+            Database db = Database.getDatabase();
+            Connection connection = db.getConnection();
+            
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(String.format("insert into User values ('%s', '%s', '%s');", username, name, password));
+            statement.close();
+            connection.commit();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true; // return True if success and false otherwise
 
     }
 
@@ -248,13 +272,33 @@ public class Account implements Page {
         public String username;
         public String first;
         public String last;
-        public ArrayList<String> recipes;
 
     }
 
-    private User signIn(String uname, String p) {
+    private User signIn(String uname, String p) throws NoSuchAlgorithmException {
         User u = null;
         // TODO: connect to database and try to get user
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        // hash the password before storing
+        p = bytesToHex(digest.digest(p.getBytes(StandardCharsets.UTF_8)));
+        p = p.substring(0, PASSWORD_SIZE);
+        try {
+            Database db = Database.getDatabase();
+            Connection connection = db.getConnection();
+            
+            ResultSet rs;
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(String.format("SELECT name from User where username='%s' and password='%s';", uname, p));
+            
+            while (rs.next()) {
+               System.out.println(rs.getString("name"));
+            }
+            statement.close();
+            connection.close();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return u;
     }
 }
