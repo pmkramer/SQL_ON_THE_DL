@@ -9,7 +9,7 @@ package cookbook;
 import java.sql.*;
 public class Database  {
     private static Database db = null;
-    private Connection connect;
+    private final Connection connect;
     
     private Database() throws SQLException {
         try {
@@ -18,6 +18,7 @@ public class Database  {
             "jdbc:mysql://ambari-head.csc.calpoly.edu:3306/sqldl?user=sqldl&password=cookbook");
         } catch (Exception e){
             e.printStackTrace();
+            throw new SQLException();
         }
     }
     
@@ -25,11 +26,13 @@ public class Database  {
         if (db == null) db = new Database();
     }
     
-    public Database getDatabase() throws SQLException {
+    public static Database getDatabase() throws SQLException {
         if (db == null) {
             db = new Database();
         }
         return db;
     }
+    
+    
     
 }

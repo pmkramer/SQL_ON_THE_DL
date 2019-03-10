@@ -23,6 +23,7 @@ public class Cookbook extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+        Database.initDB();
         stage.setTitle("Cookbook");
         Menu.setUpStage(stage);
         home = new Home();
@@ -33,7 +34,6 @@ public class Cookbook extends Application {
         for (Page p : pages) {
             p.getMenu().setUpNavigation();
         }
-        
         stage.setScene(pages[Home.ID].getScene());
         stage.show();
     }

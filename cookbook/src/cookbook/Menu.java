@@ -42,7 +42,6 @@ public final class Menu {
     }
     
     public Menu(String cp) {
-        setCurrentPage(cp);
         root.setId("menu");
 	root.setMinWidth(300);
 	root.setMinHeight(800); 
@@ -61,8 +60,8 @@ public final class Menu {
         account.setId("account");
         account.setMinWidth(300);
         account.setMinHeight(267);
-        
         root.getChildren().addAll(home, search, account);
+        setCurrentPage(cp);
     }
     
     public VBox getRoot() {
