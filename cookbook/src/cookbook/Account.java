@@ -128,6 +128,8 @@ public class Account implements Page {
                 }
                 if (user == null) {
                     badInput.setText("Incorrect Username or Password");
+                } else {
+                    badInput.setText("");
                 }
             }
         });
@@ -230,7 +232,6 @@ public class Account implements Page {
             statement.executeUpdate(String.format("insert into User values ('%s', '%s', '%s');", username, name, password));
             statement.close();
             connection.commit();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -270,34 +271,29 @@ public class Account implements Page {
     private class User {
 
         public String username;
-        public String first;
-        public String last;
+        public String name;
+        
+        public User(String username, String name) {
+            this.username = username;
+            this.name = name;
+        }
 
     }
 
     private User signIn(String uname, String p) throws NoSuchAlgorithmException {
         User u = null;
+        String name = null;
+        Query query = new Query();
+        
         // TODO: connect to database and try to get user
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         // hash the password before storing
         p = bytesToHex(digest.digest(p.getBytes(StandardCharsets.UTF_8)));
         p = p.substring(0, PASSWORD_SIZE);
-        try {
-            Database db = Database.getDatabase();
-            Connection connection = db.getConnection();
-            
-            ResultSet rs;
-            Statement statement = connection.createStatement();
-            rs = statement.executeQuery(String.format("SELECT name from User where username='%s' and password='%s';", uname, p));
-            
-            while (rs.next()) {
-               System.out.println(rs.getString("name"));
-            }
-            statement.close();
-            connection.close();
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
+        
+        name = query.checkUserCredentials(uname, p);
+        if (name != null) {
+            u = new User(uname, name);
         }
         return u;
     }

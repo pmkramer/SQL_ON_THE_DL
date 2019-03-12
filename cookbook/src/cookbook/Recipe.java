@@ -5,6 +5,9 @@
  */
 package cookbook;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -48,8 +51,6 @@ public class Recipe implements Page{
         background.getChildren().add(preview);
     }
 
-    
-    
     @Override
     public VBox getRoot() {
         return root;
@@ -65,6 +66,44 @@ public class Recipe implements Page{
         return scene;
     }
     
-    
+    public void insertRecipe(String name, String description, 
+            String instructions, int calories, String img, String owner, 
+            ArrayList<String> categories, ArrayList<String> ingredients, int cost) {
+        try {
+            Database db = Database.getDatabase();
+            Connection connection = db.getConnection();
+
+            ResultSet rs;
+            Statement statement = connection.createStatement();
+            
+            int rID = -1;
+            
+            connection.setAutoCommit(false);
+            // insert into Recipe values (name, desc, instr, cals, owner);
+            statement.executeUpdate(String.format("insert into Recipe values ('%s', '%s', '%s', %d, '%s', %d);", 
+                                                    name, description, instructions, calories, owner, cost));
+            connection.commit();
+            
+            // select rID of new recipe
+            rs = statement.executeQuery("select max(R.rID) as rID from Recipe R;");
+            if (rs.next()) {
+                rID = rs.getInt("rID");
+            }
+            
+            // insert into categories and ingredients only if they didn't exist
+            // insert into recipeIngredients and recipeCategories using rID
+            for (String category : categories) {
+                statement.executeUpdate(String.format("insert into Categories values ('%s');", category));
+                statement.executeUpdate(String.format("insert into RecipeCategories values (%d, '%s');", rID, category));
+            }
+            
+            for (String ingredient : ingredients) {
+                statement.executeUpdate(String.format("insert into Ingredients values ('%s');", ingredient));
+                statement.executeUpdate(String.format("insert into RecipeIngredients values (%d, '%s');", rID, ingredient));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     
 }
