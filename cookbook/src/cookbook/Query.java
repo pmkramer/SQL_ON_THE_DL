@@ -101,6 +101,24 @@ public class Query {
         return categories;
     }
     
+    public ArrayList<Recipe> searchByIngredient(ArrayList<String> ingredients) {
+        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        try {
+            Statement statement;
+            ResultSet rs;
+            String query;
+            
+            // select distinct r.*
+            // from Recipes r, RecipeIngredients ri
+            // where r.rID = ri.rID and (ri.ingredient
+            
+            statement = connection.createStatement();
+        } catch (SQLException ex) {
+            
+        }
+        return recipes;
+    }
+    
     public ArrayList<Recipe> serachByCategory(ArrayList<String> categories) {
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
         String category;
@@ -136,6 +154,52 @@ public class Query {
             ex.printStackTrace();
         }
         
+        
+        return recipes;
+    }
+    
+    public ArrayList<Recipe> searchByCost(int cost) {
+        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        try {
+            ResultSet rs;
+            Statement statement = connection.createStatement();
+            String selectStatement = "select * from Recipes where %s";
+            String condition = "cost = %d";
+            
+            condition = String.format(condition, cost);
+            selectStatement = String.format(selectStatement, condition);
+            
+            rs = statement.executeQuery(selectStatement);
+            
+            while(rs.next()) {
+                //TODO: create and add recipes
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        
+        return recipes;
+    }
+    
+    public ArrayList<Recipe> searchByCalories(int calories) {
+        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        try {
+            ResultSet rs;
+            Statement statement = connection.createStatement();
+            String selectStatement = "select * from Recipes where %s";
+            String condition = "calories = %d";
+            
+            condition = String.format(condition, calories);
+            selectStatement = String.format(selectStatement, condition);
+            
+            rs = statement.executeQuery(selectStatement);
+            
+            while(rs.next()) {
+                //TODO: create and add recipes
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
         
         return recipes;
     }
