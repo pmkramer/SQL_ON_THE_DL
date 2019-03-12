@@ -33,6 +33,10 @@ public class Database  {
         return db;
     }
     
+    public Connection getConnection() {
+        return connect;
+    }
+    
     
     
 }
