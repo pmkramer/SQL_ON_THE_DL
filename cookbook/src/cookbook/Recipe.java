@@ -66,7 +66,7 @@ public class Recipe implements Page{
         return scene;
     }
     
-    public void insertRecipe(String name, String description, 
+    public static void insertRecipe(String name, String description, 
             String instructions, int calories, String img, String owner, 
             ArrayList<String> categories, ArrayList<String> ingredients, int cost) {
         try {
@@ -80,12 +80,12 @@ public class Recipe implements Page{
             
             connection.setAutoCommit(false);
             // insert into Recipe values (name, desc, instr, cals, owner);
-            statement.executeUpdate(String.format("insert into Recipe values ('%s', '%s', '%s', %d, '%s', %d);", 
-                                                    name, description, instructions, calories, owner, cost));
+            statement.executeUpdate(String.format("insert into Recipes (name, description, instructions, calories, image, owner, price) values ('%s', '%s', '%s', %d, '%s', '%s', %d);", 
+                                                    name, description, instructions, calories, img, owner, cost));
             connection.commit();
             
             // select rID of new recipe
-            rs = statement.executeQuery("select max(R.rID) as rID from Recipe R;");
+            rs = statement.executeQuery("select max(R.rID) as rID from Recipes R;");
             if (rs.next()) {
                 rID = rs.getInt("rID");
             }

@@ -79,8 +79,7 @@ public final class Menu {
 	b.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-		/*if(b.getId().equals(ACC))
-                    Account.loadResults();*/
+                System.out.println("" + pageID);
 		stage.setScene(pages[pageID].getScene());
             }
 	});

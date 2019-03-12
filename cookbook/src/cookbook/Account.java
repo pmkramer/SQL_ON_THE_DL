@@ -31,7 +31,7 @@ import javafx.scene.text.FontWeight;
 
 public class Account implements Page {
 
-    public static final int ID = 2;
+    public static final int ID = 3;
     private final VBox root = new VBox();
     private final Scene scene;
     private final Menu menu = new Menu("account");
@@ -44,6 +44,7 @@ public class Account implements Page {
     private VBox subPage;
     private final int PASSWORD_SIZE = 20;
 
+       
     private Account() {
         HBox background = Menu.Background();
         root.getChildren().add(background);
@@ -214,6 +215,11 @@ public class Account implements Page {
 
     public static Account getAccount() {
         return acc;
+    }
+    
+    public String getUser() {
+        if (user == null) return "user";
+        return user.username;
     }
 
     private boolean createAccount(String username, String name, String password) throws NoSuchAlgorithmException {

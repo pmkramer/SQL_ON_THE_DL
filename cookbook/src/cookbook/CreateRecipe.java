@@ -174,17 +174,19 @@ public class CreateRecipe implements Page{
                 if (descr == null || name == "") {
                     
                 }
-                Integer cals;
+                Integer cals = 0;
                 try {
                     cals = Integer.parseInt(recipeCals.getText());
                 } catch (Exception e) {
                     recipeCals.setText("Calories should be a whole number");
+                    return;
                 }
-                Integer cost;
+                Integer cost = 0;
                 try {
                     cost = Integer.parseInt(recipeCost.getText());
                 } catch (Exception e) {
                     recipeCost.setText("Cost should be a whole number");
+                    return;
                 }
                 String instrs = "";
                 for (TextField t : recipeInstrs.getItems()) {
@@ -198,6 +200,8 @@ public class CreateRecipe implements Page{
                 for (TextField t : recipeCategs.getItems()) {
                     categories.add(t.getText());
                 }
+                String img = recipeImage.getText();
+                Recipe.insertRecipe(name, descr, instrs, cals, img, Account.getAccount().getUser(), categories, ingredients, cost);
             }
             
             // TODO: pass values to db query
