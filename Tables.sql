@@ -11,14 +11,14 @@ create table Recipes(
     calories integer,
     image varchar(30),
     owner varchar(30),
+    price integer,
     foreign key (owner) references User(username) on delete cascade on update cascade);
     
 create table Categories(
 	category varchar(50) PRIMARY KEY);
     
 create table Ingredients(
-	name varchar(30) PRIMARY KEY,
-    price integer);
+	name varchar(30) PRIMARY KEY);
     
 create table RecipeIngredients(
 	rID integer,
