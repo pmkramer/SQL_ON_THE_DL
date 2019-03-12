@@ -15,7 +15,7 @@ public class Query {
     public Query() {
         
     }
-    
+    /*
     public void insert(String table, String values) {
         ResultSet rs;
         Statement stmt;
@@ -32,7 +32,7 @@ public class Query {
             e.printStackTrace();
         }
     }
-    
+    */
     public void update() {
         
     }

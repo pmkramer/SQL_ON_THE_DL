@@ -49,18 +49,24 @@ public final class Menu {
         Button home = new Button("Cookbook Recipes");
         home.setId("home");
         home.setMinWidth(300);
-        home.setMinHeight(267);
+        home.setMinHeight(200);
         
         Button search = new Button("Search");
         search.setId("search");
         search.setMinWidth(300);
-        search.setMinHeight(266);
+        search.setMinHeight(200);
+        
+        Button create = new Button("Create Recipe");
+        create.setId("create");
+        create.setMinWidth(300);
+        create.setMinHeight(200);
         
         Button account = new Button("Account");
         account.setId("account");
         account.setMinWidth(300);
-        account.setMinHeight(267);
-        root.getChildren().addAll(home, search, account);
+        account.setMinHeight(200);
+        
+        root.getChildren().addAll(home, search, create, account);
         setCurrentPage(cp);
     }
     
@@ -88,6 +94,8 @@ public final class Menu {
                 setUpSingleConnection(stage, pages, (Button)n, Search.ID);
             } else if (n.getId().equals("account")) {
                 setUpSingleConnection(stage, pages, (Button)n, Account.ID);
+            } else {
+                setUpSingleConnection(stage, pages, (Button)n, CreateRecipe.ID);
             }
         }
     }

@@ -17,6 +17,8 @@ public class Cookbook extends Application {
     private Page home;
     private Page search;
     private Page account;
+    private Page create;
+    
     public static void main(String[] args) {
         launch(args);
     }
@@ -29,7 +31,8 @@ public class Cookbook extends Application {
         home = new Home();
         search = new Search();
         account = Account.getAccount();
-        Page[] pages = {home, search, account};
+        create = new CreateRecipe();
+        Page[] pages = {home, search, create, account};
         Menu.setUpPages(pages);
         for (Page p : pages) {
             p.getMenu().setUpNavigation();

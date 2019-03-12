@@ -31,7 +31,7 @@ import javafx.scene.text.FontWeight;
 
 public class Account implements Page {
 
-    public static final int ID = 2;
+    public static final int ID = 3;
     private final VBox root = new VBox();
     private final Scene scene;
     private final Menu menu = new Menu("account");
