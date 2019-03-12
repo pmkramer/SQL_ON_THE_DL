@@ -6,6 +6,7 @@
 package cookbook;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.event.ActionEvent;
@@ -70,6 +71,19 @@ public class Search implements Page{
         
         Button search = new Button("Search");
         grid.add(search, 2, 24);
+        search.setOnAction(new EventHandler<ActionEvent>() {
+           @Override
+           public void handle(ActionEvent e) {
+               ArrayList<String> searchFilters = new ArrayList();
+               for (TextField t : filters.getItems()) searchFilters.add(t.getText());
+               ListView<VBox> prevs = new ListView();
+               for (Recipe rec : Query.search(searchFilters, filterType.getValue())) {
+                   prevs.getItems().add(rec.getRoot());
+               }
+               Cookbook.home.updatePreviews(prevs);
+           }
+           
+        });
         
         Button add = new Button("Add Filter Criteria");
         add.setOnAction(new EventHandler<ActionEvent>() {

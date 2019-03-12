@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  * @author krame
  */
 public class Cookbook extends Application {
-    private Page home;
+    public static Home home;
     private Page search;
     private Page account;
     private Page create;

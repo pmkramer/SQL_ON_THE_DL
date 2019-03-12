@@ -12,8 +12,8 @@ import java.util.ArrayList;
  */
 public class Query {
     
-    private Database db;
-    private Connection connection;
+    private static Database db;
+    private static Connection connection;
     
     public Query() {
         try {
@@ -24,11 +24,31 @@ public class Query {
         this.connection = db.getConnection();
     }
     
-    public void searchRecipeByName(String name) {
+    public static ArrayList<Recipe> search(ArrayList<String> filters, String method) {
+        switch (method) {
+            case "Ingredients" :
+                return null;
+            case "Categories" :
+                return searchByCategory(filters);
+            case "Recipe Name" : 
+                return searchRecipeByName(filters);
+            case "Recipe Cost" : 
+                return searchByCost(filters);
+            case "Calories" : 
+                return searchByCalories(filters);
+            case "Owner UserName" : 
+                return null;
+            default:
+                return null;
+        }
+    }
+    
+    private static ArrayList<Recipe> searchRecipeByName(ArrayList<String> filter) {
+        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
         try {
             Statement stmt;
             ResultSet rs;
-            
+            String name = filter.get(0);
             int rid = -1;
             String description;
             String instructions;
@@ -37,6 +57,13 @@ public class Query {
             int price;
             String owner;
             ArrayList<String> ingredients;
+            
+            try {
+                db = Database.getDatabase();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            connection = db.getConnection();
             
             stmt = connection.createStatement();
             rs = stmt.executeQuery(String.format("select * from Recipe where name='%s';", name));
@@ -53,13 +80,15 @@ public class Query {
 
             ingredients = getIngredients(rid);
             
-            Recipe recipe = new Recipe(image);
+            recipes.add(new Recipe(image));
         } catch (SQLException ex) {
             
         }
+        
+        return recipes;
     }
     
-    public ArrayList<String> getCategories(int rid) {
+    private ArrayList<String> getCategories(int rid) {
         ArrayList<String> categories = new ArrayList<String>();
         
         try {
@@ -80,7 +109,7 @@ public class Query {
         return categories;
     }
     
-    public ArrayList<String> getIngredients(int rid) {
+    private static ArrayList<String> getIngredients(int rid) {
         ArrayList<String> categories = new ArrayList<String>();
         
         try {
@@ -101,7 +130,7 @@ public class Query {
         return categories;
     }
     
-    public ArrayList<Recipe> searchByIngredient(ArrayList<String> ingredients) {
+    private ArrayList<Recipe> searchByIngredient(ArrayList<String> ingredients) {
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
         try {
             Statement statement;
@@ -119,7 +148,7 @@ public class Query {
         return recipes;
     }
     
-    public ArrayList<Recipe> serachByCategory(ArrayList<String> categories) {
+    private static ArrayList<Recipe> searchByCategory(ArrayList<String> categories) {
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
         String category;
         
@@ -158,8 +187,10 @@ public class Query {
         return recipes;
     }
     
-    public ArrayList<Recipe> searchByCost(int cost) {
+    private static ArrayList<Recipe> searchByCost(ArrayList<String> filters) {
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        String filter = filters.get(0);
+        int cost = Integer.parseInt(filter);
         try {
             ResultSet rs;
             Statement statement = connection.createStatement();
@@ -181,8 +212,10 @@ public class Query {
         return recipes;
     }
     
-    public ArrayList<Recipe> searchByCalories(int calories) {
+    private static ArrayList<Recipe> searchByCalories(ArrayList<String> filters) {
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        String filter = filters.get(0);
+        int calories = Integer.parseInt(filter);
         try {
             ResultSet rs;
             Statement statement = connection.createStatement();
