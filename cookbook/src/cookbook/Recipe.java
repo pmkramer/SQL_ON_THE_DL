@@ -27,12 +27,27 @@ public class Recipe implements Page{
     private String descr = "";
     private String insts = "";
     private String author = "";
+    private int cals;
+    private int cost;
     private int id;
+    private String image;
     
     // CHANGE CONSTRUCTOR TO TAKE ALL NECESSARY FIELDS
     // THAT DEFINE A RECIPE
+    public Recipe(String name, String descr, String insts, String author, int cals, int cost, ArrayList<String> ingredients) {
+        this.name = name;
+        this.insts = insts;
+        this.descr = descr;
+        this.author = author;
+        this.cals = cals;
+        this.cost = cost;
+        this.ingredients = ingredients;
+        // DO MORE STUFF HERE
+    }
+    
     public Recipe(String image) {
         // TODO: get recipe info
+        this.image = image;
         HBox background = Menu.Background();
         background.getChildren().add(menu.getRoot());
         root.getChildren().add(background);
@@ -51,6 +66,18 @@ public class Recipe implements Page{
         background.getChildren().add(preview);
     }
 
+    public String name() { 
+        return name;
+    }
+    
+    public String image() {
+        return image;
+    }
+    
+    public String descr() {
+        return descr;
+    }
+    
     @Override
     public VBox getRoot() {
         return root;

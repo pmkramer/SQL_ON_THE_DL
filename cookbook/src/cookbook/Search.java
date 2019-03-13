@@ -8,6 +8,8 @@ package cookbook;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -77,8 +79,16 @@ public class Search implements Page{
                ArrayList<String> searchFilters = new ArrayList();
                for (TextField t : filters.getItems()) searchFilters.add(t.getText());
                ListView<VBox> prevs = new ListView();
+               prevs.setMinWidth(900);
+               prevs.setMaxWidth(800);
+               prevs.setMinHeight(800);
                for (Recipe rec : Query.search(searchFilters, filterType.getValue())) {
-                   prevs.getItems().add(rec.getRoot());
+                   System.out.println("here");
+                   try {
+                       prevs.getItems().add(new Preview(rec.name(), rec.image(), rec.descr(), rec).getView());
+                   } catch (FileNotFoundException ex) {
+                       Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+                   }
                }
                Cookbook.home.updatePreviews(prevs);
            }

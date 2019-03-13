@@ -27,16 +27,22 @@ public class Query {
     public static ArrayList<Recipe> search(ArrayList<String> filters, String method) {
         switch (method) {
             case "Ingredients" :
+                System.out.println("searching on ingredients");
                 return null;
             case "Categories" :
+                System.out.println("searching on categories");
                 return searchByCategory(filters);
             case "Recipe Name" : 
+                System.out.println("searching on recipe names");
                 return searchRecipeByName(filters);
             case "Recipe Cost" : 
+                System.out.println("searching on cost");
                 return searchByCost(filters);
             case "Calories" : 
+                System.out.println("searching on calories");
                 return searchByCalories(filters);
             case "Owner UserName" : 
+                System.out.println("searching on user name");
                 return null;
             default:
                 return null;
@@ -66,7 +72,7 @@ public class Query {
             connection = db.getConnection();
             
             stmt = connection.createStatement();
-            rs = stmt.executeQuery(String.format("select * from Recipe where name='%s';", name));
+            rs = stmt.executeQuery(String.format("select * from Recipes where name='%s';", name));
             
             if (rs.next()) {
                 rid = rs.getInt("rID");

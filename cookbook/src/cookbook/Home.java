@@ -34,19 +34,23 @@ public class Home implements Page{
     private final VBox subpage;
     private ListView<VBox> previews;
     private final Menu menu = new Menu("home");
+    private final HBox background;
     
     public Home() throws FileNotFoundException {
         // TODO:  stylize to make pretty
         subpage = Menu.createSub(root);
-        HBox background = Menu.Background();
-        previews = Preview.initPreviews();
-        background.getChildren().addAll(menu.getRoot(), previews);
+        background = Menu.Background();
+        background.getChildren().addAll(menu.getRoot(), Preview.initPreviews());
         root.getChildren().add(background);
         scene = new Scene(root, 1200, 800);
     }
     
     public void updatePreviews(ListView<VBox> prevs) {
-        previews = prevs;
+        prevs.setMinWidth(900);
+	prevs.setMaxWidth(800);
+	prevs.setMinHeight(800);
+        background.getChildren().remove(1);
+        background.getChildren().add(prevs);
     }
     
     

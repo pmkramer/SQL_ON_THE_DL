@@ -27,14 +27,16 @@ import javafx.stage.Stage;
  */
 public class Preview {
     private final VBox preview = new VBox();
+    private final Recipe recipe;
     
-    private Preview(String name, String image, String description) throws FileNotFoundException {
+    public Preview(String name, String image, String description, Recipe r) throws FileNotFoundException {
         // TODO: stylize preview to make pretty
         // TODO: change constructor to take all fields a recipe should have
+        recipe = r;
         Text title = new Text(name);
         ImageView previewImage = new ImageView(new Image("file:src/res/" + image, 500, 500, true, true));
         previewImage.setOnMouseClicked((MouseEvent me) -> {
-            Menu.getStage().setScene(new Recipe(image).getScene());
+            Menu.getStage().setScene(recipe.getScene());
         });
         
         Text descr = new Text(description);
@@ -43,6 +45,9 @@ public class Preview {
     }
     
     
+    public VBox getView() {
+        return preview;
+    }
     
     public static ListView<VBox> initPreviews() throws FileNotFoundException {
         // TODO: connect to database to get all recipes instead of the dummy loop
@@ -55,10 +60,10 @@ public class Preview {
         
         for (int i = 0; i < 100; ++i) {
             for (int j = 1; j <= 2; ++j) {
-                prev = new Preview("food", "food" + j + ".png", "delicious food");
+                prev = new Preview("food", "food" + j + ".png", "delicious food", new Recipe("food" + j + ".png"));
                 prevs.getItems().add(prev.preview);
             }
-            prevs.getItems().add(new Preview("food", "food3.jpg", "delicious food").preview);
+            prevs.getItems().add(new Preview("food", "food3.jpg", "delicious food", new Recipe("food3.jpg")).preview);
             
         }
         return prevs;
