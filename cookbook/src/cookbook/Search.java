@@ -87,7 +87,7 @@ public class Search implements Page{
                        System.out.println("here");
                        prevs.getItems().add(rec.preview().getView());
                    }
-               } catch (FileNotFoundException ex) {
+               } catch (Exception ex) {
                    Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
                }
                System.out.println(prevs.getItems().size());

@@ -18,6 +18,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import java.sql.SQLException;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 
 public class Recipe implements Page{
     private VBox root = new VBox();
@@ -46,11 +48,12 @@ public class Recipe implements Page{
         this.cost = cost;
         this.ingredients = ingredients;
         // DO MORE STUFF HERE
-        if (img.length() > 4 && img.substring(0,4).equals("http")) {
+        if (img.length() > 4 && !img.substring(0,4).equals("http")) {
             img = "file:src/res/" + img;
         }
         try {
             this.image = new Image(img, 500, 500, true, true);
+            System.out.println(img);
         } catch (Exception e) {
             this.image = new Image("file:src/res/food1.png", 500, 500, true, true);
         }
@@ -66,7 +69,21 @@ public class Recipe implements Page{
         Text title = new Text(name);
         ImageView previewImage = new ImageView(this.image);
         Text descrip = new Text(descr);
-        preview.getChildren().addAll(title, previewImage, descrip);
+        ListView<Text> instructions = new ListView();
+        instructions.getItems().add(new Text("Instructions: "));
+        String instrs[] = insts.split("\n");
+        for (int i = 0; i < instrs.length; ++i) {
+            Text t = new Text(instrs[i]);
+            //t.setWrapText(true);
+            instructions.getItems().add(t);
+        }
+        ListView<Text> ingreds = new ListView();
+        ingreds.getItems().add(new Text("Ingredients: "));
+        for (String ingr : ingredients) 
+            ingreds.getItems().add(new Text(ingr));
+        
+        
+        preview.getChildren().addAll(title, previewImage, descrip, ingreds, instructions);
         preview.setAlignment(Pos.CENTER);
         background.getChildren().add(preview);
     }

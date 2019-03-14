@@ -29,7 +29,7 @@ public final class Menu {
     private String currentPage = "";
     
     private static Stage stage;
-    private static Page[] pages;
+    private static Page[] pages = new Page[4];
     
     
     
@@ -38,7 +38,8 @@ public final class Menu {
     }
     
     public static void setUpPages(Page[] p) {
-        pages = p;
+        for (int i = 0; i < pages.length; ++i)
+            pages[i] = p[i];
     }
     
     public Menu(String cp) {
@@ -80,6 +81,7 @@ public final class Menu {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("" + pageID);
+                System.out.println(pages);
 		stage.setScene(pages[pageID].getScene());
             }
 	});
