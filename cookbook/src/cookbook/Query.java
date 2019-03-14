@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package cookbook;
+import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.ArrayList;
 /**
@@ -24,7 +25,7 @@ public class Query {
         this.connection = db.getConnection();
     }
     
-    public static ArrayList<Recipe> search(ArrayList<String> filters, String method) {
+    public static ArrayList<Recipe> search(ArrayList<String> filters, String method) throws FileNotFoundException {
         switch (method) {
             case "Ingredients" :
                 System.out.println("searching on ingredients");
@@ -49,7 +50,7 @@ public class Query {
         }
     }
     
-    private static ArrayList<Recipe> searchRecipeByName(ArrayList<String> filter) {
+    private static ArrayList<Recipe> searchRecipeByName(ArrayList<String> filter) throws FileNotFoundException {
         ArrayList<Recipe> recipes = null;
         try {
             Statement stmt;
@@ -143,7 +144,7 @@ public class Query {
         return recipes;
     }
     
-    private static ArrayList<Recipe> searchByCategory(ArrayList<String> categories) {
+    private static ArrayList<Recipe> searchByCategory(ArrayList<String> categories) throws FileNotFoundException {
         ArrayList<Recipe> recipes = null;
         String category;
         
@@ -177,7 +178,7 @@ public class Query {
         return recipes;
     }
     
-    private static ArrayList<Recipe> searchByCost(ArrayList<String> filters) {
+    private static ArrayList<Recipe> searchByCost(ArrayList<String> filters) throws FileNotFoundException {
         ArrayList<Recipe> recipes = null;
         String filter = filters.get(0);
         int cost = Integer.parseInt(filter);
@@ -201,7 +202,7 @@ public class Query {
         return recipes;
     }
     
-    private static ArrayList<Recipe> searchByCalories(ArrayList<String> filters) {
+    private static ArrayList<Recipe> searchByCalories(ArrayList<String> filters) throws FileNotFoundException {
         ArrayList<Recipe> recipes = null;
         String filter = filters.get(0);
         int calories = Integer.parseInt(filter);
@@ -225,7 +226,7 @@ public class Query {
         return recipes;
     }
     
-    public static ArrayList<Recipe> getTop10() {
+    public static ArrayList<Recipe> getTop10() throws FileNotFoundException {
         ArrayList<Recipe> recipes = null;
         if (db == null) {
             try {
@@ -270,7 +271,7 @@ public class Query {
         return name;
     }
     
-    public static ArrayList<Recipe> genRecipeList(ResultSet rs) {
+    public static ArrayList<Recipe> genRecipeList(ResultSet rs) throws FileNotFoundException {
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
         int rID = -1;
         String recipeName;
@@ -280,7 +281,7 @@ public class Query {
         ArrayList<String> ingredients;
         String descriptions;
         String instructions;
-        
+        String image;
         try {
             while(rs.next()) {
                 rID = rs.getInt("rID");
@@ -291,11 +292,11 @@ public class Query {
                 descriptions = rs.getString("description");
                 instructions = rs.getString("instructions");
                 ingredients = getIngredients(rID);
-
-                recipes.add(new Recipe(recipeName, descriptions, instructions, author, cals, cost, ingredients));
+                image = rs.getString("image");
+                recipes.add(new Recipe(recipeName, descriptions, instructions, image, author, cals, cost, ingredients));
             }
         } catch (SQLException e) {
-            
+            e.printStackTrace();
         }
         
         return recipes;

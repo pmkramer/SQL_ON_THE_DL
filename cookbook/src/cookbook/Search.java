@@ -82,14 +82,15 @@ public class Search implements Page{
                prevs.setMinWidth(900);
                prevs.setMaxWidth(800);
                prevs.setMinHeight(800);
-               for (Recipe rec : Query.search(searchFilters, filterType.getValue())) {
-                   System.out.println("here");
-                   try {
-                       prevs.getItems().add(new Preview(rec.name(), rec.image(), rec.descr(), rec).getView());
-                   } catch (FileNotFoundException ex) {
-                       Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+               try {
+                   for (Recipe rec : Query.search(searchFilters, filterType.getValue())) {
+                       System.out.println("here");
+                       prevs.getItems().add(rec.preview().getView());
                    }
+               } catch (FileNotFoundException ex) {
+                   Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
                }
+               System.out.println(prevs.getItems().size());
                Cookbook.home.updatePreviews(prevs);
            }
            

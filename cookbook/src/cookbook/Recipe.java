@@ -5,6 +5,7 @@
  */
 package cookbook;
 
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -30,11 +31,13 @@ public class Recipe implements Page{
     private int cals;
     private int cost;
     private int id;
-    private String image;
+    private Image image;
+    private Preview preview;
+    
     
     // CHANGE CONSTRUCTOR TO TAKE ALL NECESSARY FIELDS
     // THAT DEFINE A RECIPE
-    public Recipe(String name, String descr, String insts, String author, int cals, int cost, ArrayList<String> ingredients) {
+    public Recipe(String name, String descr, String insts, String img, String author, int cals, int cost, ArrayList<String> ingredients) throws FileNotFoundException {
         this.name = name;
         this.insts = insts;
         this.descr = descr;
@@ -43,11 +46,38 @@ public class Recipe implements Page{
         this.cost = cost;
         this.ingredients = ingredients;
         // DO MORE STUFF HERE
+        if (img.length() > 4 && img.substring(0,4).equals("http")) {
+            img = "file:src/res/" + img;
+        }
+        try {
+            this.image = new Image(img, 500, 500, true, true);
+        } catch (Exception e) {
+            this.image = new Image("file:src/res/food1.png", 500, 500, true, true);
+        }
+        this.preview = new Preview(name, this.image, descr, this);
+        HBox background = Menu.Background();
+        background.getChildren().add(menu.getRoot());
+        root.getChildren().add(background);
+        scene = new Scene(root, 1200, 800);
+        menu.setUpNavigation();
+        // THIS IS JUST TO HAVE SOMETHING TO SHOW FOR NOW
+        // DO NOT KEEP IN FINAL
+        VBox preview = new VBox();
+        Text title = new Text(name);
+        ImageView previewImage = new ImageView(this.image);
+        Text descrip = new Text(descr);
+        preview.getChildren().addAll(title, previewImage, descrip);
+        preview.setAlignment(Pos.CENTER);
+        background.getChildren().add(preview);
+    }
+    
+    public Preview preview() {
+        return preview;
     }
     
     public Recipe(String image) {
         // TODO: get recipe info
-        this.image = image;
+        //this.image = image;
         HBox background = Menu.Background();
         background.getChildren().add(menu.getRoot());
         root.getChildren().add(background);
@@ -70,7 +100,7 @@ public class Recipe implements Page{
         return name;
     }
     
-    public String image() {
+    public Image image() {
         return image;
     }
     

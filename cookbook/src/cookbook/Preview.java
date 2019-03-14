@@ -29,12 +29,12 @@ public class Preview {
     private final VBox preview = new VBox();
     private final Recipe recipe;
     
-    public Preview(String name, String image, String description, Recipe r) throws FileNotFoundException {
+    public Preview(String name, Image image, String description, Recipe r) throws FileNotFoundException {
         // TODO: stylize preview to make pretty
         // TODO: change constructor to take all fields a recipe should have
         recipe = r;
         Text title = new Text(name);
-        ImageView previewImage = new ImageView(new Image("file:src/res/" + image, 500, 500, true, true));
+        ImageView previewImage = new ImageView(image);
         previewImage.setOnMouseClicked((MouseEvent me) -> {
             Menu.getStage().setScene(recipe.getScene());
         });
@@ -56,15 +56,8 @@ public class Preview {
 	prevs.setMaxWidth(800);
 	prevs.setMinHeight(800);
         
-        Preview prev;
-        
-        for (int i = 0; i < 100; ++i) {
-            for (int j = 1; j <= 2; ++j) {
-                prev = new Preview("food", "food" + j + ".png", "delicious food", new Recipe("food" + j + ".png"));
-                prevs.getItems().add(prev.preview);
-            }
-            prevs.getItems().add(new Preview("food", "food3.jpg", "delicious food", new Recipe("food3.jpg")).preview);
-            
+        for (Recipe rec : Query.getTop10()) {
+            prevs.getItems().add(rec.preview().getView());
         }
         return prevs;
     }
