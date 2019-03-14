@@ -50,10 +50,11 @@ public class Query {
     }
     
     private static ArrayList<Recipe> searchRecipeByName(ArrayList<String> filter) {
-        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        ArrayList<Recipe> recipes = null;
         try {
             Statement stmt;
             ResultSet rs;
+            
             String name = filter.get(0);
             int rid = -1;
             String description;
@@ -74,19 +75,7 @@ public class Query {
             stmt = connection.createStatement();
             rs = stmt.executeQuery(String.format("select * from Recipes where name='%s';", name));
             
-            if (rs.next()) {
-                rid = rs.getInt("rID");
-                description = rs.getString("description");
-                instructions = rs.getString("instructions");
-                calories = rs.getInt("calories");
-                image = rs.getString("image");
-                price = rs.getInt("price");
-                owner = rs.getString("owner");
-            }
-
-            ingredients = getIngredients(rid);
-            
-            recipes.add(new Recipe(image));
+            recipes = genRecipeList(rs);
         } catch (SQLException ex) {
             
         }
@@ -155,7 +144,7 @@ public class Query {
     }
     
     private static ArrayList<Recipe> searchByCategory(ArrayList<String> categories) {
-        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        ArrayList<Recipe> recipes = null;
         String category;
         
         try {
@@ -178,12 +167,7 @@ public class Query {
             }
             
             rs = stmt.executeQuery(select_string);
-            
-            while(rs.next()) {
-                // this will give 1 recipe each
-                recipes.add(new Recipe("test"));
-            }
-            stmt.executeQuery(select_string);
+            recipes = genRecipeList(rs);
             stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -194,7 +178,7 @@ public class Query {
     }
     
     private static ArrayList<Recipe> searchByCost(ArrayList<String> filters) {
-        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        ArrayList<Recipe> recipes = null;
         String filter = filters.get(0);
         int cost = Integer.parseInt(filter);
         try {
@@ -208,9 +192,8 @@ public class Query {
             
             rs = statement.executeQuery(selectStatement);
             
-            while(rs.next()) {
-                //TODO: create and add recipes
-            }
+            recipes = genRecipeList(rs);
+            statement.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -219,7 +202,7 @@ public class Query {
     }
     
     private static ArrayList<Recipe> searchByCalories(ArrayList<String> filters) {
-        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        ArrayList<Recipe> recipes = null;
         String filter = filters.get(0);
         int calories = Integer.parseInt(filter);
         try {
@@ -233,13 +216,39 @@ public class Query {
             
             rs = statement.executeQuery(selectStatement);
             
-            while(rs.next()) {
-                //TODO: create and add recipes
-            }
+            recipes = genRecipeList(rs);
+            statement.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         
+        return recipes;
+    }
+    
+    public static ArrayList<Recipe> getTop10() {
+        ArrayList<Recipe> recipes = null;
+        if (db == null) {
+            try {
+                db = Database.getDatabase();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            connection = db.getConnection();
+        }
+        
+        Statement stmt;
+        ResultSet rs;
+
+        try {
+            stmt = connection.createStatement();
+            rs = stmt.executeQuery("select * from Recipes limit 10;");
+            
+            recipes = genRecipeList(rs);
+            stmt.close();
+        } catch (SQLException e) {
+            
+        }
+
         return recipes;
     }
     
@@ -259,5 +268,36 @@ public class Query {
         }
         
         return name;
+    }
+    
+    public static ArrayList<Recipe> genRecipeList(ResultSet rs) {
+        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        int rID = -1;
+        String recipeName;
+        String author;
+        int cals;
+        int cost;
+        ArrayList<String> ingredients;
+        String descriptions;
+        String instructions;
+        
+        try {
+            while(rs.next()) {
+                rID = rs.getInt("rID");
+                recipeName = rs.getString("name");
+                author = rs.getString("owner");
+                cals = rs.getInt("calories");
+                cost = rs.getInt("price");
+                descriptions = rs.getString("description");
+                instructions = rs.getString("instructions");
+                ingredients = getIngredients(rID);
+
+                recipes.add(new Recipe(recipeName, descriptions, instructions, author, cals, cost, ingredients));
+            }
+        } catch (SQLException e) {
+            
+        }
+        
+        return recipes;
     }
 }

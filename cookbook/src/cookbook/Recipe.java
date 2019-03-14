@@ -16,7 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
+import java.sql.SQLException;
 
 public class Recipe implements Page{
     private VBox root = new VBox();
@@ -120,13 +120,21 @@ public class Recipe implements Page{
             // insert into categories and ingredients only if they didn't exist
             // insert into recipeIngredients and recipeCategories using rID
             for (String category : categories) {
-                statement.executeUpdate(String.format("insert into Categories values ('%s');", category));
+                try {
+                    statement.executeUpdate(String.format("insert into Categories values ('%s');", category));
+                } catch (SQLException ex) {
+                    // ignore this
+                }
                 connection.commit();
                 statement.executeUpdate(String.format("insert into RecipeCategories values (%d, '%s');", rID, category));
             }
             
             for (String ingredient : ingredients) {
-                statement.executeUpdate(String.format("insert into Ingredients values ('%s');", ingredient));
+                try {
+                    statement.executeUpdate(String.format("insert into Ingredients values ('%s');", ingredient));
+                } catch (SQLException ex) {
+                    // ignore this
+                }
                 connection.commit();
                 statement.executeUpdate(String.format("insert into RecipeIngredients values (%d, '%s');", rID, ingredient));
             }
