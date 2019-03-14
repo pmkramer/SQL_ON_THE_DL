@@ -106,7 +106,7 @@ public class Query {
             connection = db.getConnection();
             
             stmt = connection.createStatement();
-            String select_string = "select distinct r.* from Recipes r where r.owner =";
+            String select_string = "select distinct r.* from Recipes r where (r.owner =";
             String filter;
             for (int i = 0; i < filters.size(); i++) {
                 filter = filters.get(i);
@@ -257,7 +257,7 @@ public class Query {
             ResultSet rs;
             Statement statement = connection.createStatement();
             String selectStatement = "select * from Recipes where %s";
-            String condition = "cost <= %d";
+            String condition = "price <= %d";
             
             condition = String.format(condition, cost);
             selectStatement = String.format(selectStatement, condition);
