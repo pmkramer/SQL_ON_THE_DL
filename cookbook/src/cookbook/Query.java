@@ -64,8 +64,8 @@ public class Query {
             connection = db.getConnection();
             
             stmt = connection.createStatement();
-            String select_string = "SELECT R.rID, R.name, R.description, R.instructions, R.calories, R.image, R.owner, R.price" +
-                                   "FROM Recipes R, RecipeIngredients RI, Ingredients I" +
+            String select_string = "SELECT R.rID, R.name, R.description, R.instructions, R.calories, R.image, R.owner, R.price " +
+                                   "FROM Recipes R, RecipeIngredients RI, Ingredients I " +
                                    "WHERE R.rID = RI.rID and I.name = RI.ingredient and (I.name =";
             
             String filter;
@@ -75,14 +75,16 @@ public class Query {
                 select_string += (filter) += (i == filters.size()-1 ? ")" : " or I.name=");
             }
             
-            String conditional = "GROUP BY R.rID, R.name, R.description, R.instructions, R.calories, R.image, R.owner, R.price" +
+            String conditional = " GROUP BY R.rID, R.name, R.description, R.instructions, R.calories, R.image, R.owner, R.price " +
                                  "HAVING COUNT(*) = %d;";
             
             conditional = String.format(conditional, filters.size());
             
-            rs = stmt.executeQuery(select_string);
+            System.out.println(select_string + conditional);
+            rs = stmt.executeQuery(select_string + conditional);
             
             recipes = genRecipeList(rs);
+            stmt.close();
         } catch (SQLException ex) {
             
         }
@@ -135,13 +137,14 @@ public class Query {
             connection = db.getConnection();
             
             stmt = connection.createStatement();
-            String select_string = "select distinct r.* from Recipes r where r.name =";
+            String select_string = "select distinct r.* from Recipes r where (r.name =";
             String filter;
             for (int i = 0; i < filters.size(); i++) {
                 filter = filters.get(i);
                 filter = "'" + filter + "'";
                 select_string += (filter) += (i == filters.size()-1 ? ");" : " or r.name=");
             }
+            System.out.println(select_string);
             rs = stmt.executeQuery(select_string);
             
             recipes = genRecipeList(rs);
