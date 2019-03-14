@@ -29,7 +29,7 @@ public class Query {
         switch (method) {
             case "Ingredients" :
                 System.out.println("searching on ingredients");
-                return null;
+                return searchRecipeByIngredients(filters);
             case "Categories" :
                 System.out.println("searching on categories");
                 return searchByCategory(filters);
@@ -44,27 +44,17 @@ public class Query {
                 return searchByCalories(filters);
             case "Owner UserName" : 
                 System.out.println("searching on user name");
-                return null;
+                return searchRecipeByOwner(filters);
             default:
                 return null;
         }
     }
     
-    private static ArrayList<Recipe> searchRecipeByName(ArrayList<String> filter) throws FileNotFoundException {
+    public static ArrayList<Recipe> searchRecipeByIngredients(ArrayList<String> filters) throws FileNotFoundException {
         ArrayList<Recipe> recipes = null;
         try {
             Statement stmt;
             ResultSet rs;
-            
-            String name = filter.get(0);
-            int rid = -1;
-            String description;
-            String instructions;
-            int calories;
-            String image = "";
-            int price;
-            String owner;
-            ArrayList<String> ingredients;
             
             try {
                 db = Database.getDatabase();
@@ -74,7 +64,85 @@ public class Query {
             connection = db.getConnection();
             
             stmt = connection.createStatement();
-            rs = stmt.executeQuery(String.format("select * from Recipes where name='%s';", name));
+            String select_string = "SELECT R.rID, R.name, R.description, R.instructions, R.calories, R.image, R.owner, R.price" +
+                                   "FROM Recipes R, RecipeIngredients RI, Ingredients I" +
+                                   "WHERE R.rID = RI.rID and I.name = RI.ingredient and (I.name =";
+            
+            String filter;
+            for (int i = 0; i < filters.size(); i++) {
+                filter = filters.get(i);
+                filter = "'" + filter + "'";
+                select_string += (filter) += (i == filters.size()-1 ? ")" : " or I.name=");
+            }
+            
+            String conditional = "GROUP BY R.rID, R.name, R.description, R.instructions, R.calories, R.image, R.owner, R.price" +
+                                 "HAVING COUNT(*) = %d;";
+            
+            conditional = String.format(conditional, filters.size());
+            
+            rs = stmt.executeQuery(select_string);
+            
+            recipes = genRecipeList(rs);
+        } catch (SQLException ex) {
+            
+        }
+        
+        return recipes;
+    }
+    
+    private static ArrayList<Recipe> searchRecipeByOwner(ArrayList<String> filters) throws FileNotFoundException {
+        ArrayList<Recipe> recipes = null;
+        try {
+            Statement stmt;
+            ResultSet rs;
+            
+            try {
+                db = Database.getDatabase();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            connection = db.getConnection();
+            
+            stmt = connection.createStatement();
+            String select_string = "select distinct r.* from Recipes r where r.owner =";
+            String filter;
+            for (int i = 0; i < filters.size(); i++) {
+                filter = filters.get(i);
+                filter = "'" + filter + "'";
+                select_string += (filter) += (i == filters.size()-1 ? ");" : " or r.owner=");
+            }
+            rs = stmt.executeQuery(select_string);
+            
+            recipes = genRecipeList(rs);
+        } catch (SQLException ex) {
+            
+        }
+        
+        return recipes;
+    }
+    
+    private static ArrayList<Recipe> searchRecipeByName(ArrayList<String> filters) throws FileNotFoundException {
+        ArrayList<Recipe> recipes = null;
+        try {
+            Statement stmt;
+            ResultSet rs;
+            
+            try {
+                db = Database.getDatabase();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            connection = db.getConnection();
+            
+            stmt = connection.createStatement();
+            String select_string = "select distinct r.* from Recipes r where r.name =";
+            String filter;
+            for (int i = 0; i < filters.size(); i++) {
+                filter = filters.get(i);
+                filter = "'" + filter + "'";
+                select_string += (filter) += (i == filters.size()-1 ? ");" : " or r.name=");
+            }
+            rs = stmt.executeQuery(select_string);
             
             recipes = genRecipeList(rs);
         } catch (SQLException ex) {
@@ -186,7 +254,7 @@ public class Query {
             ResultSet rs;
             Statement statement = connection.createStatement();
             String selectStatement = "select * from Recipes where %s";
-            String condition = "cost = %d";
+            String condition = "cost <= %d";
             
             condition = String.format(condition, cost);
             selectStatement = String.format(selectStatement, condition);
@@ -210,7 +278,7 @@ public class Query {
             ResultSet rs;
             Statement statement = connection.createStatement();
             String selectStatement = "select * from Recipes where %s";
-            String condition = "calories = %d";
+            String condition = "calories <= %d";
             
             condition = String.format(condition, calories);
             selectStatement = String.format(selectStatement, condition);
