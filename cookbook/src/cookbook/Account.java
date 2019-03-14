@@ -43,7 +43,7 @@ public class Account implements Page {
     private static String blackBG = "-fx-border-color: black;";
     private VBox subPage;
     private final int PASSWORD_SIZE = 20;
-
+    private final GridPane grid;
        
     private Account() {
         HBox background = Menu.Background();
@@ -52,7 +52,7 @@ public class Account implements Page {
         subPage = Menu.createSub(root);
         background.getChildren().addAll(menu.getRoot(), subPage);
 
-        final GridPane grid = new GridPane();
+        grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
@@ -124,6 +124,7 @@ public class Account implements Page {
                 }
                 try {
                     user = signIn(username, password);
+                    if (user != null) setUpProfile();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -176,7 +177,10 @@ public class Account implements Page {
                     String firstN = firstNameTextField.getText();
                     String lastN = lastNameTextField.getText();
                     try {
-                        boolean result = createAccount(username, firstN + " " + lastN, password);
+                        if(createAccount(username, firstN + " " + lastN, password)) {
+                            user = new User(username, firstN + " " + lastN);
+                            setUpProfile();
+                        }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -213,6 +217,15 @@ public class Account implements Page {
         subPage.getChildren().add(grid);
     }
 
+    public void setUpProfile() {
+        grid.getChildren().clear();
+        Label username = new Label("Username: " + user.username);
+        Label name = new Label("Name: " + user.name);
+        grid.add(username, 1, 24);
+        grid.add(name, 1, 25);
+        
+        
+    }
     public static Account getAccount() {
         return acc;
     }

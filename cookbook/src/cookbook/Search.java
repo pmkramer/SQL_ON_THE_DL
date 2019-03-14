@@ -90,6 +90,16 @@ public class Search implements Page{
                } catch (Exception ex) {
                    Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
                }
+               Search s;
+               try {
+                   s = new Search();
+               } catch (FileNotFoundException ex) {
+                   Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+                   return;
+               }
+               s.getMenu().setUpNavigation();
+               Menu.updatePages(s, ID);
+               Menu.stage().setScene(Menu.pages()[Home.ID].getScene());
                System.out.println(prevs.getItems().size());
                Cookbook.home.updatePreviews(prevs);
            }

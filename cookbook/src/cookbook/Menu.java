@@ -37,6 +37,18 @@ public final class Menu {
         stage = s;
     }
     
+    public static void updatePages(Page p, int pageID) {
+        pages[pageID] = p;
+    }
+    
+    public static Page[] pages() {
+        return pages;
+    }
+    
+    public static Stage stage() {
+        return stage;
+    }
+    
     public static void setUpPages(Page[] p) {
         for (int i = 0; i < pages.length; ++i)
             pages[i] = p[i];

@@ -160,9 +160,9 @@ public class CreateRecipe implements Page{
             }
         });
         grid.add(addCateg, 2, 31);
-        
         final Button createRecipe = new Button("Create Recipe");
         createRecipe.setOnAction(new EventHandler<ActionEvent>() {
+            
             @Override
             public void handle(ActionEvent ae) {
                 String name = recipeName.getText();
@@ -201,7 +201,17 @@ public class CreateRecipe implements Page{
                     categories.add(t.getText());
                 }
                 String img = recipeImage.getText();
-                Recipe.insertRecipe(name, descr, instrs, cals, img, Account.getAccount().getUser(), categories, ingredients, cost);
+                String inserted = "Recipe was created";
+                try {
+                    Recipe.insertRecipe(name, descr, instrs, cals, img, Account.getAccount().getUser(), categories, ingredients, cost);
+                } catch (Exception ex) {
+                    inserted = "Recipe was not created";
+                }
+                grid.getChildren().clear();
+                grid.add(new Label(inserted), 1, 25);
+                CreateRecipe cr = new CreateRecipe();
+                cr.getMenu().setUpNavigation();
+                Menu.updatePages(cr, ID);
             }
             
             // TODO: pass values to db query
